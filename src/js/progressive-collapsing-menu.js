@@ -1,50 +1,20 @@
-/**
- *
- * @param { header links } menuLinks
- * @param { header nav > ul } menuLinksParent
- * @param { Number } widthBeforeItTells
- * @returns true || false
- */
+const navigationLinks = [];
+const moreNavigationLinks = [];
 
-const WHENTOCOLLAPSE =
-  function tellsWhenTheMenuItemsIsGreaterInSizeOrEqualInSizeThanItsMenuParents(
-    menuLinks,
-    menuLinksParent,
-    widthBeforeItTells = 0,
-  ) {
-    let allMenuLinksInWidth = 0;
-    const menuLinksParentWidth = menuLinksParent.clientWidth;
-
-    menuLinks.forEach((link) => {
-      allMenuLinksInWidth += link.clientWidth;
-    });
-
-    // less widthBeforeItTells value would mean late reaction
-    return allMenuLinksInWidth + widthBeforeItTells >= menuLinksParentWidth;
-  };
-
-const MENULINKS = () => {
-  // we'll be adding these with Elements
-  // eslint-disable-next-line prefer-const
-  let menuLinks = [];
-
-  const linkAdder = function addMenuLinks(link) {
-    return menuLinks.push(link);
-  };
-
-  const linkRemover = function removeLastMenuLink() {
-    return menuLinks.pop();
-  };
-
-  const lastMenuLinkGetter = function getLastMenuLinks() {
-    return menuLinks.slice(-1).at(-1);
-  };
+const navigationMethods = ({ moreNavLinks, navLinks }) => {
+  const moveELementToMoreNav = () => moreNavLinks.push(navLinks.pop());
+  const moveMoreElementToNav = () => navLinks.push(moreNavLinks.pop());
 
   return {
-    linkAdder,
-    linkRemover,
-    lastMenuLinkGetter,
+    moveELementToMoreNav,
+    moveMoreElementToNav,
   };
 };
 
-export { WHENTOCOLLAPSE, MENULINKS };
+/**
+ * Todo: create an if statement within a function that will make the navigation methods be used whenw there is an overflowing or fit element
+ * Todo: create a dom function for navigation links array that recieve a parameter for html element for appending a child purposely for showing an element to their respective parent
+ * todo: create a dom function for more navigation links array that recieve a parameter for html element for appending a child purposely for showing an element to their respective parent
+ *
+ * ? note: moving an element to other is easy. you could do it with 'appendChild'
+ */
