@@ -1,20 +1,99 @@
-const navigationLinks = [];
-const moreNavigationLinks = [];
+const navigationLinks = ({ navigationListLinksOnTheScreen, itsLink }) => {
+  let anchorLinkWidth = 0;
+  const navigationListOfLinksArray = [];
+  const moreNavigationListOfLinksArray = [];
 
-const navigationMethods = ({ moreNavLinks, navLinks }) => {
-  const moveELementToMoreNav = () => moreNavLinks.push(navLinks.pop());
-  const moveMoreElementToNav = () => navLinks.push(moreNavLinks.pop());
+  // push all 'li' html element containing 'a' html element
+  const addNavigationListOfLinks = () =>
+    navigationListLinksOnTheScreen.forEach((navList) => {
+      navigationListOfLinksArray.push(navList);
+    });
+
+  // get the client width of all 'a' html element
+  const itsLinkWidthGetter = () =>
+    itsLink.forEach((anchorLink) => {
+      anchorLinkWidth += anchorLink.clientWidth;
+    });
 
   return {
-    moveELementToMoreNav,
-    moveMoreElementToNav,
+    anchorLinkWidth,
+    navigationListOfLinksArray,
+    moreNavigationListOfLinksArray,
+    addNavigationListOfLinks,
+    itsLinkWidthGetter,
   };
 };
 
-/**
- * Todo: create an if statement within a function that will make the navigation methods be used whenw there is an overflowing or fit element
- * Todo: create a dom function for navigation links array that recieve a parameter for html element for appending a child purposely for showing an element to their respective parent
- * todo: create a dom function for more navigation links array that recieve a parameter for html element for appending a child purposely for showing an element to their respective parent
- *
- * ? note: moving an element to other is easy. you could do it with 'appendChild'
- */
+const populateElement =
+  function provideArrayParameterWithArrayOfElementsContainingLinksYouWantSecondParameterToAppendChild({
+    arrayOfElement,
+    parent,
+  }) {
+    // append multiple children
+    const populate = () =>
+      arrayOfElement.forEach((element) => {
+        parent.appendChild(element);
+      });
+
+    return {
+      populate,
+    };
+  };
+
+const moveElementFromOtherArrayToArray = ({
+  navigationLinksArray,
+  moreNavigationLinksArray,
+}) => {
+  const moveFromNavLinksToMoreNavLinks =
+    function pushALinkFromNavigationLinksToMoreFromNavigationLinks() {
+      if (
+        navigationLinksArray.at(-1) === undefined ||
+        navigationLinksArray.at(-1) === null
+      ) {
+        return 0;
+      }
+      return moreNavigationLinksArray.push(navigationLinksArray.pop());
+    };
+
+  const moveFromMoreLinksToNavLinks =
+    function pushALinkFromMoreNavigationLinksToNavigationLinks() {
+      if (
+        moreNavigationLinksArray.at(-1) === undefined ||
+        moreNavigationLinksArray.at(-1) === null
+      ) {
+        return 0;
+      }
+      return navigationLinksArray.push(moreNavigationLinksArray.pop());
+    };
+
+  return {
+    moveFromMoreLinksToNavLinks,
+    moveFromNavLinksToMoreNavLinks,
+  };
+};
+
+const elementMovementOnCondition = ({
+  moveFunctions,
+  navigationLinksWidth,
+  navigationParentWidth,
+  additionalValue,
+}) => {
+  // move an element from this array to another array so they can be populated later
+  const move = () => {
+    if (navigationLinksWidth + additionalValue >= navigationParentWidth) {
+      return moveFunctions.moveFromNavLinksToMoreNavLinks();
+    }
+    return moveFunctions.moveFromMoreLinksToNavLinks();
+  };
+
+  return {
+    move,
+  };
+};
+
+export {
+  navigationLinks,
+  populateElement,
+  moveElementFromOtherArrayToArray,
+  elementMovementOnCondition,
+};
