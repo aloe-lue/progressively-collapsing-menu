@@ -1,22 +1,23 @@
-const navigationLinks = ({ navigationListLinksOnTheScreen, itsLink }) => {
+const navigationLinks = () => {
   let anchorLinkWidth = 0;
   const navigationListOfLinksArray = [];
   const moreNavigationListOfLinksArray = [];
 
   // push all 'li' html element containing 'a' html element
-  const addNavigationListOfLinks = () =>
+  const addNavigationListOfLinks = (navigationListLinksOnTheScreen) =>
     navigationListLinksOnTheScreen.forEach((navList) => {
       navigationListOfLinksArray.push(navList);
     });
 
   // get the client width of all 'a' html element
-  const itsLinkWidthGetter = () =>
+  const itsLinkWidthGetter = (itsLink) => {
     itsLink.forEach((anchorLink) => {
       anchorLinkWidth += anchorLink.clientWidth;
     });
+    return anchorLinkWidth;
+  };
 
   return {
-    anchorLinkWidth,
     navigationListOfLinksArray,
     moreNavigationListOfLinksArray,
     addNavigationListOfLinks,

@@ -20,8 +20,10 @@ const allNavAnchorLinks = document.querySelectorAll('a[data-menu-link]');
 
 const navLinks = navigationLinks();
 navLinks.addNavigationListOfLinks(allNavListOfLinks);
-navLinks.itsLinkWidthGetter(allNavAnchorLinks);
 
 window.addEventListener('resize', () => {
-  console.log(navLinks.navigationListOfLinksArray, navLinks.anchorLinkWidth);
+  console.log(
+    navLinks.navigationListOfLinksArray,
+    navLinks.itsLinkWidthGetter(allNavAnchorLinks),
+  );
 });
