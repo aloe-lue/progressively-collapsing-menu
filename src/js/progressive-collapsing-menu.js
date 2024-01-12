@@ -6,18 +6,20 @@ const navigationLinks = () => {
   // push all 'li' html element containing 'a' html element
   const addNavigationListOfLinks = (navigationListLinksOnTheScreen) =>
     navigationListLinksOnTheScreen.forEach((navList) => {
+      console.log(navList.clientWidth);
       navigationListOfLinksArray.push(navList);
     });
 
   // get the client width of all 'a' html element
-  const itsLinkWidthGetter = (itsLink) => {
-    itsLink.forEach((anchorLink) => {
+  const itsLinkWidthGetter = () => {
+    navigationListOfLinksArray.forEach((anchorLink) => {
       anchorLinkWidth += anchorLink.clientWidth;
     });
     return anchorLinkWidth;
   };
 
   return {
+    anchorLinkWidth,
     navigationListOfLinksArray,
     moreNavigationListOfLinksArray,
     addNavigationListOfLinks,
