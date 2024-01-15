@@ -1,92 +1,59 @@
-const navigationLinks = () => {
-  let anchorLinkWidth = 0;
-  const navigationListOfLinksArray = [];
-  const moreNavigationListOfLinksArray = [];
+const arrayOfElements = () => {
+  let totalWidth = 0;
+  const elements = [];
+  const moreElements = [];
 
-  // push all 'li' html element containing 'a' html element
-  const addNavigationListOfLinks = (navigationListLinksOnTheScreen) =>
-    navigationListLinksOnTheScreen.forEach((navList) => {
-      console.log(navList.clientWidth);
-      navigationListOfLinksArray.push(navList);
+  const addToElements = (elementsToAdd) => {
+    elementsToAdd.forEach((element) => {
+      elements.push(element);
     });
+  };
 
-  // get the client width of all 'a' html element
-  const itsLinkWidthGetter = () => {
-    navigationListOfLinksArray.forEach((anchorLink) => {
-      anchorLinkWidth += anchorLink.clientWidth;
+  const getTotalWidth = (elementsWidth) => {
+    elementsWidth.forEach((element) => {
+      totalWidth += element.clientWidth;
     });
-    return anchorLinkWidth;
+    return totalWidth;
   };
 
   return {
-    anchorLinkWidth,
-    navigationListOfLinksArray,
-    moreNavigationListOfLinksArray,
-    addNavigationListOfLinks,
-    itsLinkWidthGetter,
+    elements,
+    moreElements,
+    addToElements,
+    getTotalWidth,
   };
 };
 
-const populateElement =
-  function provideArrayParameterWithArrayOfElementsContainingLinksYouWantSecondParameterToAppendChild({
-    arrayOfElement,
-    parent,
-  }) {
-    // append multiple children
-    const populate = () =>
-      arrayOfElement.forEach((element) => {
-        parent.appendChild(element);
-      });
-
-    return {
-      populate,
-    };
-  };
-
-const moveElementFromOtherArrayToArray = ({
-  navigationLinksArray,
-  moreNavigationLinksArray,
-}) => {
-  const moveFromNavLinksToMoreNavLinks =
-    function pushALinkFromNavigationLinksToMoreFromNavigationLinks() {
-      if (
-        navigationLinksArray.at(-1) === undefined ||
-        navigationLinksArray.at(-1) === null
-      ) {
-        return 0;
-      }
-      return moreNavigationLinksArray.push(navigationLinksArray.pop());
-    };
-
-  const moveFromMoreLinksToNavLinks =
-    function pushALinkFromMoreNavigationLinksToNavigationLinks() {
-      if (
-        moreNavigationLinksArray.at(-1) === undefined ||
-        moreNavigationLinksArray.at(-1) === null
-      ) {
-        return 0;
-      }
-      return navigationLinksArray.push(moreNavigationLinksArray.pop());
-    };
-
-  return {
-    moveFromMoreLinksToNavLinks,
-    moveFromNavLinksToMoreNavLinks,
-  };
-};
-
-const elementMovementOnCondition = ({
-  moveFunctions,
-  navigationLinksWidth,
-  navigationParentWidth,
-  additionalValue,
-}) => {
-  // move an element from this array to another array so they can be populated later
-  const move = () => {
-    if (navigationLinksWidth + additionalValue >= navigationParentWidth) {
-      return moveFunctions.moveFromNavLinksToMoreNavLinks();
+const arrayItemMover = ({ getFromHere, setItHere }) => {
+  const moveArrayTo = () => {
+    if (
+      getFromHere.at(-1) === undefined ||
+      getFromHere.at(-1) === null ||
+      setItHere.at(-1) === undefined ||
+      setItHere.at(-1) === null
+    ) {
+      return 0;
     }
-    return moveFunctions.moveFromMoreLinksToNavLinks();
+    return setItHere.push(getFromHere.pop());
+  };
+
+  return {
+    moveArrayTo,
+  };
+};
+
+const arrayMove = ({
+  moveToOne,
+  moveToTwo,
+  linksWidth,
+  parentWidth,
+  addValue,
+}) => {
+  const move = () => {
+    if (linksWidth + addValue >= parentWidth) {
+      return moveToOne.moveArrayTo();
+    }
+    return moveToTwo.moveArrayTo();
   };
 
   return {
@@ -94,9 +61,16 @@ const elementMovementOnCondition = ({
   };
 };
 
-export {
-  navigationLinks,
-  populateElement,
-  moveElementFromOtherArrayToArray,
-  elementMovementOnCondition,
+const populateElement = ({ arrayOfElement, parent }) => {
+  const populate = () => {
+    arrayOfElement.forEach((element) => {
+      parent.appendChild(element);
+    });
+  };
+
+  return {
+    populate,
+  };
 };
+
+export { arrayOfElements, arrayItemMover, arrayMove, populateElement };
