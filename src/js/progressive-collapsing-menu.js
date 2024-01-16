@@ -1,7 +1,10 @@
 const arrayOfElements = () => {
   let totalWidth = 0;
+
   const elements = [];
   const moreElements = [];
+  const elementsWidth = [];
+  const moreElementsWidth = [];
 
   const addToElements = (elementsToAdd) => {
     elementsToAdd.forEach((element) => {
@@ -9,9 +12,15 @@ const arrayOfElements = () => {
     });
   };
 
-  const getTotalWidth = (elementsWidth) => {
-    elementsWidth.forEach((element) => {
-      totalWidth += element.clientWidth;
+  const addToElementsWidth = (elementsToAdd) => {
+    elementsToAdd.forEach((element) => {
+      elementsWidth.push(element.clientWidth);
+    });
+  };
+
+  const computeTotalWidth = (elementsToAdd) => {
+    elementsToAdd.forEach((element) => {
+      totalWidth += element;
     });
     return totalWidth;
   };
@@ -19,45 +28,32 @@ const arrayOfElements = () => {
   return {
     elements,
     moreElements,
+    moreElementsWidth,
+    elementsWidth,
     addToElements,
-    getTotalWidth,
+    addToElementsWidth,
+    computeTotalWidth,
   };
 };
 
-const arrayItemMover = ({ getFromHere, setItHere }) => {
-  const moveArrayTo = () => {
-    if (
-      getFromHere.at(-1) === undefined ||
-      getFromHere.at(-1) === null ||
-      setItHere.at(-1) === undefined ||
-      setItHere.at(-1) === null
-    ) {
+const arrayItemMover = ({ arrayOne, arrayTwo }) => {
+  const moveToArrayTwo = () => {
+    if (arrayOne.at(-1) === undefined || arrayOne.at(-1) === null) {
       return 0;
     }
-    return setItHere.push(getFromHere.pop());
+    return arrayTwo.push(arrayOne.pop());
   };
 
-  return {
-    moveArrayTo,
-  };
-};
-
-const arrayMove = ({
-  moveToOne,
-  moveToTwo,
-  linksWidth,
-  parentWidth,
-  addValue,
-}) => {
-  const move = () => {
-    if (linksWidth + addValue >= parentWidth) {
-      return moveToOne.moveArrayTo();
+  const moveToArrayOne = () => {
+    if (arrayTwo.at(-1) === undefined || arrayTwo.at(-1) === null) {
+      return 0;
     }
-    return moveToTwo.moveArrayTo();
+    return arrayOne.push(arrayTwo.pop());
   };
 
   return {
-    move,
+    moveToArrayOne,
+    moveToArrayTwo,
   };
 };
 
@@ -73,4 +69,49 @@ const populateElement = ({ arrayOfElement, parent }) => {
   };
 };
 
-export { arrayOfElements, arrayItemMover, arrayMove, populateElement };
+const subtractArrays = ({ arrayOne, arrayTwo }) => {
+  let total = 0;
+  const initialValue = 0;
+
+  const reduceArrayValues = (array) =>
+    array.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      initialValue,
+    );
+
+  const subtractTwoArrays = () => {
+    total = reduceArrayValues(arrayOne) - reduceArrayValues(arrayTwo);
+    return total;
+  };
+
+  return { subtractTwoArrays };
+};
+
+const itemMover = ({
+  moveElement,
+  moveNumber,
+  linksWidth,
+  parentWidth,
+  addValue,
+}) => {
+  const move = () => {
+    if (linksWidth + addValue >= parentWidth) {
+      moveElement.moveToArrayTwo();
+      moveNumber.moveToArrayTwo();
+    }
+    moveElement.moveToArrayOne();
+    moveNumber.moveToArrayOne();
+  };
+
+  return {
+    move,
+  };
+};
+
+export {
+  arrayOfElements,
+  arrayItemMover,
+  itemMover,
+  populateElement,
+  subtractArrays,
+};
