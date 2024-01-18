@@ -1,117 +1,92 @@
-const arrayOfElements = () => {
-  let totalWidth = 0;
+const menuLinks = [];
 
-  const elements = [];
-  const moreElements = [];
-  const elementsWidth = [];
-  const moreElementsWidth = [];
-
-  const addToElements = (elementsToAdd) => {
-    elementsToAdd.forEach((element) => {
-      elements.push(element);
+const getMenuLinks = ({ navigationLinks }) => {
+  const pushAll = () =>
+    navigationLinks.forEach((link) => {
+      menuLinks.push(link);
     });
-  };
 
-  const addToElementsWidth = (elementsToAdd) => {
-    elementsToAdd.forEach((element) => {
-      elementsWidth.push(element.clientWidth);
-    });
-  };
-
-  const computeTotalWidth = (elementsToAdd) => {
-    elementsToAdd.forEach((element) => {
-      totalWidth += element;
-    });
-    return totalWidth;
-  };
-
-  return {
-    elements,
-    moreElements,
-    moreElementsWidth,
-    elementsWidth,
-    addToElements,
-    addToElementsWidth,
-    computeTotalWidth,
-  };
+  return { pushAll };
 };
 
-const arrayItemMover = ({ arrayOne, arrayTwo }) => {
-  const moveToArrayTwo = () => {
-    if (arrayOne.at(-1) === undefined || arrayOne.at(-1) === null) {
-      return 0;
-    }
-    return arrayTwo.push(arrayOne.pop());
-  };
+const getAllElements = ({ allElements }) => {
+  const removeThem = () =>
+    allElements.forEach((element) => {
+      element.remove();
+    });
 
-  const moveToArrayOne = () => {
-    if (arrayTwo.at(-1) === undefined || arrayTwo.at(-1) === null) {
-      return 0;
-    }
-    return arrayOne.push(arrayTwo.pop());
-  };
-
-  return {
-    moveToArrayOne,
-    moveToArrayTwo,
-  };
+  return { removeThem };
 };
 
-const populateElement = ({ arrayOfElement, parent }) => {
-  const populate = () => {
-    arrayOfElement.forEach((element) => {
+const populateElement = () => {
+  const populateDropDown = function addToDropDownElements(
+    multipleElements,
+    parent,
+  ) {
+    multipleElements.forEach((element) => {
       parent.appendChild(element);
     });
   };
 
+  const populateMenuLinks =
+    function appendAllMenuLinksElementsButRemoveMoreMenulinks(
+      array,
+      max,
+      moreMenu,
+      parent,
+    ) {
+      array.slice(0, max).forEach((link) => {
+        parent.appendChild(link);
+        moreMenu.remove();
+      });
+    };
+
+  const populateRemainingLinks =
+    function appendAllRemainingMenuLinksElementsbutAppendMoreMenuLinks(
+      array,
+      max,
+      parent,
+      moreMenu,
+    ) {
+      return array.slice(0, max).forEach((link) => {
+        parent.appendChild(link);
+        parent.appendChild(moreMenu);
+      });
+    };
+
   return {
-    populate,
+    populateMenuLinks,
+    populateRemainingLinks,
+    populateDropDown,
   };
 };
 
-const subtractArrays = ({ arrayOne, arrayTwo }) => {
-  let total = 0;
-  const initialValue = 0;
-
-  const reduceArrayValues = (array) =>
-    array.reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
-      initialValue,
-    );
-
-  const subtractTwoArrays = () => {
-    total = reduceArrayValues(arrayOne) - reduceArrayValues(arrayTwo);
-    return total;
-  };
-
-  return { subtractTwoArrays };
-};
-
-const itemMover = ({
-  moveElement,
-  moveNumber,
-  linksWidth,
-  parentWidth,
-  addValue,
+const fillMenuLinks = ({
+  moreMenuLinks,
+  moreMenuLinkElement,
+  averageLinksWidth,
 }) => {
-  const move = () => {
-    if (linksWidth + addValue >= parentWidth) {
-      moveElement.moveToArrayTwo();
-      moveNumber.moveToArrayTwo();
-    }
-    moveElement.moveToArrayOne();
-    moveNumber.moveToArrayOne();
-  };
+  const maxTabs = Math.floor(window.innerWidth / averageLinksWidth);
+  const getAllExcessMenuLinks = menuLinks.slice(-(menuLinks.length - maxTabs));
 
-  return {
-    move,
-  };
+  // append all menuLinks elements but remove more menu links
+  if (maxTabs >= menuLinks.length) {
+    return menuLinks.slice(0, maxTabs).forEach((link) => {
+      menuLinks.appendChild(link);
+      moreMenuLinkElement.remove();
+    });
+  }
+
+  // add to drop down links
+  getAllExcessMenuLinks.forEach((link) => {
+    moreMenuLinks.appendChild(link);
+  });
+
+  // append all remaining menuLinks elements but append more menu links to its
+  return menuLinks.slice(0, maxTabs).forEach((link) => {
+    menuLinks.appendChild(link);
+    menuLinks.appendChild(moreMenuLinkElement);
+  });
 };
 
-export {
-  arrayOfElements,
-  arrayItemMover,
-  itemMover,
-  populateElement,
-  subtractArrays,
-};
+export { getMenuLinks, getAllElements, fillMenuLinks };
