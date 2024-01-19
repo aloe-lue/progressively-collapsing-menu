@@ -1,10 +1,9 @@
 import './assets/component-one/style.css';
 import dropDown from '@aloe_vera/drop-down-func/package/nav-func';
 import {
-  navigationLinks,
-  elementMovementOnCondition,
-  moveElementFromOtherArrayToArray,
-  populateElement,
+  fillMenuLinks,
+  getAllElements,
+  getMenuLinks,
 } from './js/progressive-collapsing-menu';
 
 window.addEventListener('load', () => {
@@ -20,34 +19,28 @@ window.addEventListener('load', () => {
   }).dropDownElement();
 });
 
-const unorderedLinks = document.querySelector('ul[class="unordered_links"]');
-const allNavListOfLinks = document.querySelectorAll('li[class="contain_link"]');
-const moreUnorderedLinks = document.querySelector(
+const menuLinks = document.querySelector('ul[class="unordered_links"]');
+const moreMenuLinks = document.querySelector(
   'ul[class="more_unordered_links"]',
 );
+const navigationLinks = document.querySelectorAll(
+  'ul[class="unordered_links"] > li[class="contain_link"]',
+);
+const moreNavLink = document.querySelector(
+  'li[class="contain_link more_links"]',
+);
 
-const navLinks = navigationLinks();
-const anchorLinkWidths = navLinks.itsLinkWidthGetter();
-navLinks.addNavigationListOfLinks(allNavListOfLinks);
+getMenuLinks({
+  elements: navigationLinks,
+}).pushAll();
 
 window.addEventListener('resize', () => {
-  elementMovementOnCondition({
-    moveFunctions: moveElementFromOtherArrayToArray({
-      navigationLinksArray: navLinks.navigationListOfLinksArray,
-      moreNavigationLinksArray: navLinks.moreNavigationListOfLinksArray,
-    }),
-    navigationLinksWidth: unorderedLinks.clientWidth,
-    navigationParentWidth: anchorLinkWidths.clientWidth,
-    additionalValue: 100,
-  }).move();
+  getAllElements({ elements: navigationLinks }).removeEach();
 
-  populateElement({
-    arrayOfElement: navLinks.navigationListOfLinksArray,
-    parent: unorderedLinks,
-  }).populate();
-
-  populateElement({
-    arrayOfElement: navLinks.moreNavigationListOfLinksArray,
-    parent: moreUnorderedLinks,
-  }).populate();
+  fillMenuLinks({
+    menuLinksParent: menuLinks,
+    moreMenuLinksElement: moreMenuLinks,
+    moreMenuLinkToggler: moreNavLink,
+    adjustIt: 40,
+  }).filltabs();
 });
