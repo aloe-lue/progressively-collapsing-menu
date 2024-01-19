@@ -1,53 +1,47 @@
 const menuLinks = [];
+const menuLinksWidths = [];
 
-const getMenuLinks = ({ navigationLinks }) => {
-  const pushAll = () =>
-    navigationLinks.forEach((link) => {
-      menuLinks.push(link);
-    });
+const getMenuLinks =
+  function pushAllOfYourMenuLinksThatYouWantToControlLaterWithFillMenulinks({
+    elements,
+  }) {
+    const pushAll = () =>
+      elements.forEach((element) => {
+        menuLinks.push(element);
+        menuLinksWidths.push(element.clientWidth);
+      });
 
-  return { pushAll };
-};
-
-const getAllElements = ({ allElements }) => {
-  const removeThem = () =>
-    allElements.forEach((element) => {
-      element.remove();
-    });
-
-  return { removeThem };
-};
-
-const populateElement = () => {
-  const populateDropDown = function addToDropDownElements(
-    multipleElements,
-    parent,
-  ) {
-    multipleElements.forEach((element) => {
-      parent.appendChild(element);
-    });
+    return { pushAll };
   };
 
-  const populateMenuLinks =
-    function appendAllMenuLinksElementsButRemoveMoreMenulinks(
-      array,
-      max,
-      moreMenu,
-      parent,
-    ) {
-      array.slice(0, max).forEach((link) => {
+const getAllElements =
+  function removeEachTtmlElementEveryTimeTheScreenSizeChanges({ elements }) {
+    const removeEach = () =>
+      elements.forEach((element) => {
+        element.remove();
+      });
+
+    return { removeEach };
+  };
+
+const populateElement = ({ array, max, moreMenu, parent }) => {
+  const populateDropDown =
+    function appendMultipleHtmlElementRemainingInTheMenuLinksArray() {
+      return array.forEach((element) => {
+        parent.appendChild(element);
+      });
+    };
+
+  const populateAllMenuLinks =
+    function appendAllMenuLinksElementsButRemoveMoreMenulinks() {
+      return array.slice(0, max).forEach((link) => {
         parent.appendChild(link);
         moreMenu.remove();
       });
     };
 
   const populateRemainingLinks =
-    function appendAllRemainingMenuLinksElementsbutAppendMoreMenuLinks(
-      array,
-      max,
-      parent,
-      moreMenu,
-    ) {
+    function appendAllRemainingMenuLinksElementsbutAppendMoreMenuLinks() {
       return array.slice(0, max).forEach((link) => {
         parent.appendChild(link);
         parent.appendChild(moreMenu);
@@ -55,38 +49,80 @@ const populateElement = () => {
     };
 
   return {
-    populateMenuLinks,
+    populateAllMenuLinks,
     populateRemainingLinks,
     populateDropDown,
   };
 };
 
+const menuLinksCalculation = () => {
+  const getAverageWidth = (array, arrayLength) =>
+    array.reduce((accu, currVal) => accu + currVal, 0) / arrayLength.length;
+
+  const getMaxTabs = (average, addValue) =>
+    window.innerWidth / (average + addValue);
+
+  const getExcessElements = (array, arrayLength, max) =>
+    array.slice(-(arrayLength, max));
+
+  return {
+    getAverageWidth,
+    getMaxTabs,
+    getExcessElements,
+  };
+};
+
+const fillMenuLinksCalculation = menuLinksCalculation();
+
 const fillMenuLinks = ({
-  moreMenuLinks,
-  moreMenuLinkElement,
-  averageLinksWidth,
+  menuLinksParent,
+  moreMenuLinksElement,
+  moreMenuLinkToggler,
+  adjustIt = 0,
 }) => {
-  const maxTabs = Math.floor(window.innerWidth / averageLinksWidth);
-  const getAllExcessMenuLinks = menuLinks.slice(-(menuLinks.length - maxTabs));
+  const averageMenuLinksWidth = fillMenuLinksCalculation.getAverageWidth(
+    menuLinksWidths,
+    menuLinks,
+  );
 
-  // append all menuLinks elements but remove more menu links
-  if (maxTabs >= menuLinks.length) {
-    return menuLinks.slice(0, maxTabs).forEach((link) => {
-      menuLinks.appendChild(link);
-      moreMenuLinkElement.remove();
-    });
-  }
+  const maxTabs = fillMenuLinksCalculation.getMaxTabs(
+    averageMenuLinksWidth,
+    adjustIt,
+  );
 
-  // add to drop down links
-  getAllExcessMenuLinks.forEach((link) => {
-    moreMenuLinks.appendChild(link);
-  });
+  const getAllExcessMenuLinks = fillMenuLinksCalculation.getExcessElements(
+    menuLinks,
+    menuLinks.length,
+    maxTabs,
+  );
 
-  // append all remaining menuLinks elements but append more menu links to its
-  return menuLinks.slice(0, maxTabs).forEach((link) => {
-    menuLinks.appendChild(link);
-    menuLinks.appendChild(moreMenuLinkElement);
-  });
+  const filltabs =
+    function fillMenuLinksWithConditionOtherwiseJustfillWhatItCanFill() {
+      if (maxTabs >= menuLinks.length) {
+        return populateElement({
+          array: menuLinks,
+          max: maxTabs,
+          parent: menuLinksParent,
+          moreMenu: moreMenuLinkToggler,
+        }).populateAllMenuLinks();
+      }
+
+      populateElement({
+        array: getAllExcessMenuLinks,
+        parent: moreMenuLinksElement,
+      }).populateDropDown();
+
+      return populateElement({
+        array: menuLinks,
+        max: maxTabs,
+        parent: menuLinksParent,
+        moreMenu: moreMenuLinkToggler,
+      }).populateRemainingLinks();
+    };
+
+  return {
+    filltabs,
+  };
 };
 
 export { getMenuLinks, getAllElements, fillMenuLinks };
