@@ -150,6 +150,7 @@ ul.more_unordered_links {
   display: flex;
   padding: 0.5rem 0.75rem;
   background-color: yellowgreen;
+  flex-wrap: wrap;
 }
 
 li {
@@ -170,7 +171,8 @@ li {
 }
 
 .close_toggler {
-  margin-left: auto;
+  display: flex;
+  justify-content: right;
 }
 
 .close_toggler > div:hover {
