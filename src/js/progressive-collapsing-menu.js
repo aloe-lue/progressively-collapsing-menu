@@ -14,16 +14,6 @@ const getMenuLinks =
     return { pushAll };
   };
 
-const getAllElements =
-  function removeEachTtmlElementEveryTimeTheScreenSizeChanges({ elements }) {
-    const removeEach = () =>
-      elements.forEach((element) => {
-        element.remove();
-      });
-
-    return { removeEach };
-  };
-
 const populateElement = ({ array, max, moreMenu, parent }) => {
   const populateDropDown =
     function appendMultipleHtmlElementRemainingInTheMenuLinksArray() {
@@ -60,10 +50,10 @@ const menuLinksCalculation = () => {
     array.reduce((accu, currVal) => accu + currVal, 0) / arrayLength.length;
 
   const getMaxTabs = (average, addValue) =>
-    window.innerWidth / (average + addValue);
+    Math.floor(window.innerWidth / (average + addValue));
 
   const getExcessElements = (array, arrayLength, max) =>
-    array.slice(-(arrayLength, max));
+    array.slice(-(arrayLength + max));
 
   return {
     getAverageWidth,
@@ -125,4 +115,4 @@ const fillMenuLinks = ({
   };
 };
 
-export { getMenuLinks, getAllElements, fillMenuLinks };
+export { getMenuLinks, fillMenuLinks };
